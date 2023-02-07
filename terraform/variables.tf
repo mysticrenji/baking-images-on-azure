@@ -1,0 +1,9 @@
+variable "region" {}
+variable "resource_group" {}
+variable "image_gallery" {}
+variable "azure_managed_image_name" {}
+variable "azure_os_type" {}
+variable "azure_managed_image_publisher" {}
+variable "azure_managed_image_offer" {}
+variable "azure_managed_image_sku" {}
+variable "azure_managed_image_hyper_v_generation" {}
