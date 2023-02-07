@@ -1,6 +1,7 @@
 resource_group = "golden-image-factory"
 region         = "westus2"
 image_gallery  = "golden-image-gallery"
+azure_os_type  = "windows"
 
 # Image Definition
 azure_managed_image_name               = "en-windows-2022-small"
