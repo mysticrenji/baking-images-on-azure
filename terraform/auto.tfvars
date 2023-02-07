@@ -1,7 +1,7 @@
 resource_group = "golden-image-factory"
 region         = "westus2"
-image_gallery  = "golden-image-gallery"
-azure_os_type  = "windows"
+image_gallery  = "golden_image_gallery" #name can only contain alphanumeric, full stops and underscores.
+azure_os_type  = "Windows"              # os_type to be one of [Linux Windows]
 
 # Image Definition
 azure_managed_image_name               = "en-windows-2022-small"
