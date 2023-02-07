@@ -15,7 +15,7 @@ resource "azurerm_shared_image_gallery" "sig" {
   resource_group_name = azurerm_resource_group.resource_group.name
   location            = azurerm_resource_group.resource_group.location
   description         = "Golden Image Gallery"
-  tags = locals.tags
+  tags                = locals.tags
 }
 
 resource "azurerm_shared_image" "windows" {
