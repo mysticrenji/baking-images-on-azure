@@ -38,3 +38,26 @@ export ARM_TENANT_ID=
 export ARM_CLIENT_SECRET=
 export ARM_ACCESS_KEY=
 ```
+### 6. Terraform execute
+```
+terraform init
+terraform apply -var-file=auto.tfvars
+```
+
+## Packer
+
+### 1. Format and validate Packer
+```
+packer init .
+packer fmt -recursive .
+packer validate -var-file="auto.pkrvars.hcl"
+```
+### 2. Build Packer
+```
+packer build -var-file="auto.pkrvars.hcl" \
+             -var "azure_client_id=$ARM_CLIENT_ID" \
+             -var "azure_client_secret=$ARM_CLIENT_SECRET" \
+             -var "azure_subscription_id=$ARM_SUBSCRIPTION_ID" \
+             -var "azure_tenant_id=$ARM_TENANT_ID" \
+             .
+```

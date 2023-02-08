@@ -1,5 +1,6 @@
 variable "region" {}
-variable "resource_group" {}
+variable "packer-build-rg" {}
+variable "packer-artifacts-rg" {}
 variable "image_gallery" {}
 variable "azure_managed_image_name" {}
 variable "azure_os_type" {}
