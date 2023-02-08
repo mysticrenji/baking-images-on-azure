@@ -61,3 +61,9 @@ packer build -var-file="auto.pkrvars.hcl" \
              -var "azure_tenant_id=$ARM_TENANT_ID" \
              .
 ```
+
+## Tips
+```
+az vm list-skus --location westus2 --size Standard_D --all --output table
+
+```

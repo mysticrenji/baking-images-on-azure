@@ -10,30 +10,30 @@ packer {
 source "azure-arm" "windows" {
 
   #authentication
-    client_id       = var.azure_client_id
-    client_secret   = var.azure_client_secret
-    subscription_id = var.azure_subscription_id
-    tenant_id       = var.azure_tenant_id
+  client_id       = var.azure_client_id
+  client_secret   = var.azure_client_secret
+  subscription_id = var.azure_subscription_id
+  tenant_id       = var.azure_tenant_id
 
-  build_resource_group_name              = var.resource_group
-  communicator                           = local.communicator[var.azure_os_type]
-  image_offer                            = var.azure_managed_image_offer
-  image_publisher                        = var.azure_managed_image_publisher
-  image_sku                              = var.azure_managed_image_sku
-  os_type                                = var.azure_os_type
-  vm_size                                = var.azure_vm_size
-  winrm_insecure                         = var.winrm_insecure
-  winrm_timeout                          = var.winrm_timeout
-  winrm_use_ssl                          = var.winrm_use_ssl
-  winrm_username                         = var.winrm_username
-  managed_image_name                     = var.azure_managed_image_name
-  managed_image_resource_group_name      = var.resource_group
-  #private_virtual_network_with_public_ip = false
+  build_resource_group_name         = var.packer-build-rg
+  communicator                      = local.communicator[var.azure_os_type]
+  image_offer                       = var.azure_managed_image_offer
+  image_publisher                   = var.azure_managed_image_publisher
+  image_sku                         = var.azure_managed_image_sku
+  os_type                           = var.azure_os_type
+  vm_size                           = var.azure_vm_size
+  winrm_insecure                    = var.winrm_insecure
+  winrm_timeout                     = var.winrm_timeout
+  winrm_use_ssl                     = var.winrm_use_ssl
+  winrm_username                    = var.winrm_username
+  managed_image_name                = var.azure_managed_image_name # managed_image_name must be equal to image_name in sig destination
+  managed_image_resource_group_name = var.packer-build-rg
+  private_virtual_network_with_public_ip = true
 
 
   shared_image_gallery_destination {
     subscription        = var.azure_subscription_id
-    resource_group      = var.resource_group
+    resource_group      = var.packer-artifacts-rg
     gallery_name        = var.image_gallery
     image_name          = var.image_name
     image_version       = var.image_version
