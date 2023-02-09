@@ -1,0 +1,6 @@
+---
+- name: Packer VM Playbook
+  hosts: all
+  roles:
+  - role: utils
+  - role: uipath
