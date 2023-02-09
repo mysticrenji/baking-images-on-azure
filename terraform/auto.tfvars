@@ -5,8 +5,8 @@ image_gallery       = "golden_image_gallery" #name can only contain alphanumeric
 azure_os_type       = "Windows"              # os_type to be one of [Linux Windows]
 
 # Image Definition
-azure_managed_image_name               = "en-windows-11"
-azure_managed_image_publisher          = "MicrosoftWindowsDesktop"
-azure_managed_image_offer              = "office-365"
-azure_managed_image_sku                = "win11-21h2-avd-m365"
-azure_managed_image_hyper_v_generation = "V2"
+azure_managed_image_name               = "en-windows-2019"
+azure_managed_image_publisher          = "MicrosoftWindowsServer"
+azure_managed_image_offer              = "WindowsServer"
+azure_managed_image_sku                = "2019-Datacenter-smalldisk"
+azure_managed_image_hyper_v_generation = "V1"
