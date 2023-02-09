@@ -15,50 +15,51 @@ source "azure-arm" "windows" {
   subscription_id = var.azure_subscription_id
   tenant_id       = var.azure_tenant_id
 
-  build_resource_group_name         = var.packer-build-rg
-  communicator                      = local.communicator[var.azure_os_type]
-  image_offer                       = var.azure_managed_image_offer
-  image_publisher                   = var.azure_managed_image_publisher
-  image_sku                         = var.azure_managed_image_sku
-  os_type                           = var.azure_os_type
-  vm_size                           = var.azure_vm_size
-  winrm_insecure                    = var.winrm_insecure
-  winrm_timeout                     = var.winrm_timeout
-  winrm_use_ssl                     = var.winrm_use_ssl
-  winrm_username                    = var.winrm_username
-  managed_image_name                = var.azure_managed_image_name # managed_image_name must be equal to image_name in sig destination
-  managed_image_resource_group_name = var.packer-build-rg
-  private_virtual_network_with_public_ip = true
+  build_resource_group_name              = var.packer-build-rg
+  communicator                           = local.communicator[var.azure_os_type]
+  image_offer                            = var.azure_managed_image_offer
+  image_publisher                        = var.azure_managed_image_publisher
+  image_sku                              = var.azure_managed_image_sku
+  os_type                                = var.azure_os_type
+  vm_size                                = var.azure_vm_size
+  os_disk_size_gb                        = var.azure_os_disk_size_gb
+  winrm_insecure                         = var.winrm_insecure
+  winrm_timeout                          = var.winrm_timeout
+  winrm_use_ssl                          = var.winrm_use_ssl
+  winrm_username                         = var.winrm_username
+  managed_image_name                     = var.azure_managed_image_name # managed_image_name must be equal to image_name in sig destination
+  managed_image_resource_group_name      = var.packer-build-rg
+  private_virtual_network_with_public_ip = false
 
 
   shared_image_gallery_destination {
-    subscription        = var.azure_subscription_id
-    resource_group      = var.packer-artifacts-rg
-    gallery_name        = var.image_gallery
-    image_name          = var.image_name
-    image_version       = var.image_version
-    replication_regions = [var.replication_regions]
+    subscription         = var.azure_subscription_id
+    resource_group       = var.packer-artifacts-rg
+    gallery_name         = var.image_gallery
+    image_name           = var.image_name
+    image_version        = var.image_version
+    replication_regions  = [var.replication_regions]
+    storage_account_type = var.azure_shared_image_gallery_destination_storage_account_type
   }
 }
 
 build {
   sources = ["source.azure-arm.windows"]
   provisioner "powershell" {
-    script = "./scripts/windows/windows-ansible.ps1"
+    script = "./scripts/windows/setup-winrm.ps1"
+  }
+
+  provisioner "ansible" {
+    playbook_file = "../ansible/playbook.yml"
+    user          = "packer"
+    use_proxy     = false
+    extra_arguments = [
+      "-v",
+      "-e",
+      "ansible_winrm_server_cert_validation=ignore"
+    ]
   }
 }
-
-//   provisioner "ansible" {
-//     playbook_file = "${var.BuildSourcesDirectory}/ansible/windows-image.yml"
-//     user          = "packer"
-//     use_proxy     = false
-//     extra_arguments = [
-//       "-v",
-//       "-e",
-//       "ansible_winrm_server_cert_validation=ignore"
-//     ]
-//   }
-
 //   provisioner "powershell" {
 //     environment_vars = [
 //       "delivery=${var.delivery}",
