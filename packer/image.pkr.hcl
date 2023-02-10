@@ -30,6 +30,7 @@ source "azure-arm" "windows" {
   managed_image_name                     = var.azure_managed_image_name # managed_image_name must be equal to image_name in sig destination
   managed_image_resource_group_name      = var.packer-build-rg
   private_virtual_network_with_public_ip = false
+  async_resourcegroup_delete             = true
 
 
   shared_image_gallery_destination {
