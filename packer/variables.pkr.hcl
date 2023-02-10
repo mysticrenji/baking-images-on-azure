@@ -8,7 +8,6 @@ variable "azure_os_disk_size_gb" {}
 variable "azure_managed_image_publisher" {}
 variable "azure_managed_image_offer" {}
 variable "azure_managed_image_sku" {}
-variable "azure_managed_image_hyper_v_generation" {}
 variable "azure_vm_size" {}
 variable "image_name" {}
 variable "image_version" {}
