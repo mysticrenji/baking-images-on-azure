@@ -55,7 +55,7 @@ build {
     user          = "packer"
     use_proxy     = false
     extra_arguments = [
-      "-v",
+      "-vvvv",
       "-e",
       "ansible_winrm_server_cert_validation=ignore"
     ]
