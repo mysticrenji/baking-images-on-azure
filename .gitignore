@@ -30,3 +30,4 @@ override.tf.json
 
 .temp.txt
 .terraform
+.werf
