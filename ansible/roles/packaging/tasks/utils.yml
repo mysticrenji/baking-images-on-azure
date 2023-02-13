@@ -1,0 +1,54 @@
+---
+- name: Install git client
+  win_chocolatey:
+    name:
+    - git
+    state: present
+
+- name: Install Firefox, NP++, github-desktop
+  win_chocolatey:
+    name:
+    - firefox
+    - notepadplusplus
+    - github-desktop
+    state: present
+
+- name: Install Chrome
+  win_chocolatey:
+    name: googlechrome
+    pinned: yes
+    state: present
+    ignore_checksums: yes
+
+- name: Install python
+  win_chocolatey:
+    name: python3
+    state: present
+
+# - name: Add Azure Storage PowerShell module
+#   win_psmodule:
+#     name: Azure.Storage
+#     state: present
+
+- name: Install ChromeDriver
+  win_chocolatey:
+    name: chromedriver
+    state: present
+
+- name: Install Adobe Reader
+  win_chocolatey:
+    name: adobereader
+    version: '2020.009.20067'
+    ignore_checksums: yes # sha256:C438AC343381031CD47DD4ED966C8E86B2BCD5A1959F55C1C7D8C61920DD18BC
+
+#    - name: Install JDK8
+#      win_chocolatey:
+#        name: jdk8
+#
+#    - name: Install JRE8
+#      win_chocolatey:
+#        name: jre8
+
+# Powershell modules installation
+- name: Ensure NuGET package provider
+  win_shell: Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.208 -Force
