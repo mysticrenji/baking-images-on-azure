@@ -67,4 +67,9 @@ packer build -var-file="auto.pkrvars.hcl" \
 ```
 az vm list-skus --location southeastasia --size Standard_D --all --output table
 ```
-2. Remove all the published versions in the SIG before destroying it via terraform. Terraform is not knowing about the current state 
+2. Remove all the published versions in the SIG before destroying it via terraform. Terraform is not knowing about the current state
+
+## References
+1. [Creating Azure Virtual Desktop using Terraform](https://techcommunity.microsoft.com/t5/azure-virtual-desktop/arm-avd-with-terraform/m-p/2639806)
+2. [Github Repo by Andreas Fleischmann](https://github.com/andif888/azure-sig)
+3. [Github Repo by GO-EUC](https://github.com/GO-EUC/go-euc-lab)

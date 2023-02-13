@@ -60,18 +60,16 @@ build {
       "ansible_winrm_server_cert_validation=ignore"
     ]
   }
+
+provisioner "windows-restart" {}
+
+
+provisioner "powershell" {
+    inline = [
+      "while ((Get-Service RdAgent).Status -ne 'Running') { Start-Sleep -s 5 }",
+      "while ((Get-Service WindowsAzureGuestAgent).Status -ne 'Running') { Start-Sleep -s 5 }",
+      "& $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /quiet /quit /mode:vm",
+      "while ($true) { $imageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select ImageState; if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') { Write-Output $imageState.ImageState; Start-Sleep -s 10  } else { break } }"
+    ]
+  }
 }
-//   provisioner "powershell" {
-//     environment_vars = [
-//       "delivery=${var.delivery}",
-//     ]
-//     inline = [
-//       "$delivery = $ENV:delivery",
-//       "Write-Host \"delivery: $delivery\"",
-//       "if ($delivery -eq \"avd\") {",
-//       "& $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /quiet /quit",
-//       "while($true) { $imageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select ImageState; if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') { Write-Output $imageState.ImageState; Start-Sleep -s 10  } else { break } }",
-//       "}"
-//     ]
-//   }
-// }
