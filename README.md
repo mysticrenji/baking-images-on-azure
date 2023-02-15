@@ -54,7 +54,7 @@ packer validate -var-file="auto.pkrvars.hcl"
 ```
 ### 2. Build Packer
 ```
-packer build -var-file="auto.pkrvars.hcl" \
+packer build -force -var-file="auto.pkrvars.hcl" \
              -var "azure_client_id=$ARM_CLIENT_ID" \
              -var "azure_client_secret=$ARM_CLIENT_SECRET" \
              -var "azure_subscription_id=$ARM_SUBSCRIPTION_ID" \
