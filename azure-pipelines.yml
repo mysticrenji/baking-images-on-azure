@@ -8,7 +8,6 @@ trigger:
   - main
 
 variables:
-  - group: environment
   - name: tfWorkSpace
     value: $(Pipeline.Workspace)/s/
 
