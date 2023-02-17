@@ -16,7 +16,7 @@ stages:
     displayName: "Initialise Terraform"
     jobs:
       - job: Terraform_Init
-        container: terraform
+        container: baking-the-image
         steps:
           - script: |
               terraform
