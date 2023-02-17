@@ -1,0 +1,31 @@
+name: baking-the-image
+resources:
+  containers:
+    - container: buildpacks-infra
+      image: builpacks-infra:v1.0.0
+
+trigger:
+  - main
+
+variables:
+  - group: environment
+  - name: tfWorkSpace
+    value: $(Pipeline.Workspace)/s/
+
+stages:
+  - stage: "Terraform_Init"
+    displayName: "Initialise Terraform"
+    jobs:
+      - job: Terraform_Init
+        container: terraform
+        steps:
+          - script: |
+              terraform
+              ansible
+              packer
+            workingDirectory: $(Build.SourcesDirectory)
+          - task: Cache@2
+            displayName: "Register TF providers"
+            inputs:
+              key: terraform | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
+              path: "$(tfWorkSpace)"
