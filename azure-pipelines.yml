@@ -8,6 +8,7 @@ trigger:
   - main
 
 variables:
+  - group: infra_variables
   - name: tfWorkSpace
     value: $(Pipeline.Workspace)/s/
 
@@ -19,9 +20,11 @@ stages:
         container: buildpacks-infra
         steps:
           - script: |
+                terraform init
+                terraform fmt
+                terraform plan -var-file=auto.tfvars
                 
-                
-            workingDirectory: $(Build.SourcesDirectory)
+            workingDirectory: $(Build.SourcesDirectory)/terraform
           # - task: Cache@2
           #   displayName: "Register TF providers"
           #   inputs:
