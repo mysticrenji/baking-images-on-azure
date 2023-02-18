@@ -19,12 +19,11 @@ stages:
         container: buildpacks-infra
         steps:
           - script: |
-              terraform
-              ansible
-              packer
+                
+                
             workingDirectory: $(Build.SourcesDirectory)
-          - task: Cache@2
-            displayName: "Register TF providers"
-            inputs:
-              key: terraform | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
-              path: "$(tfWorkSpace)"
+          # - task: Cache@2
+          #   displayName: "Register TF providers"
+          #   inputs:
+          #     key: terraform | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
+          #     path: "$(tfWorkSpace)"
