@@ -13,7 +13,7 @@ variables:
     value: $(Pipeline.Workspace)/s/
 
 stages:
-  - stage: "Terraform_Init"
+  - stage: "Terraform_Build"
     displayName: "Initialise Terraform"
     jobs:
       - job: Terraform_Init
@@ -27,11 +27,34 @@ stages:
                 export ARM_TENANT_ID=$(ARM_TENANT_ID)
                 terraform init
                 terraform fmt
-                terraform plan -var-file=auto.tfvars
-                
             workingDirectory: $(Build.SourcesDirectory)/terraform
-          # - task: Cache@2
-          #   displayName: "Register TF providers"
-          #   inputs:
-          #     key: terraform | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
-          #     path: "$(tfWorkSpace)"
+          - task: Cache@2
+            displayName: "Register TF providers"
+            inputs:
+              key: terraform | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
+              path: "$(tfWorkSpace)"
+
+      - job: Terraform_Plan
+        container: buildpacks-infra
+        steps:
+
+          - task: Cache@2
+            displayName: "Cache TF providers"
+            inputs:
+              key: terraform | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
+              path: "$(tfWorkSpace)"
+          - script: |
+                export ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
+                export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
+                export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
+                export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
+                export ARM_TENANT_ID=$(ARM_TENANT_ID)
+                terraform plan -var-file=auto.tfvars -out output.tfplan
+                terraform show -no-color -json output.tfplan > output.json
+            displayName: "Terraform Plan"
+            workingDirectory: $(tfWorkSpace)
+          - task: TerraformOutput@1
+            inputs:
+              outputFilePath: $(tfWorkSpace)/output.tfplan
+              artifactName: Staging
+              
