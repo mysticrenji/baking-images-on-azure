@@ -61,7 +61,7 @@ stages:
               
       - deployment: Terraform_Apply
         dependsOn: Terraform_Plan
-        container: terraform
+        container: buildpacks-infra
         displayName: Terraform Apply
         environment: "Staging"
         strategy:
