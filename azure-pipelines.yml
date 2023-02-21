@@ -60,6 +60,7 @@ stages:
               artifactName: Staging
               
       - deployment: Terraform_Apply
+        dependsOn: Terraform_Plan
         container: terraform
         displayName: Terraform Apply
         environment: "Staging"
