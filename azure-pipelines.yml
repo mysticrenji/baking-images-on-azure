@@ -59,3 +59,25 @@ stages:
               outputFilePath: $(tfWorkSpace)/terraform/output.tfplan
               artifactName: Staging
               
+      - deployment: Terraform_Apply
+        container: terraform
+        displayName: Terraform Apply
+        environment: "Staging"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: Cache@2
+                  displayName: "Retrieve TF Cache"
+                  inputs:
+                    key: terraform | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
+                    path: "$(tfWorkSpace)"
+                - script: |
+                    export ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
+                    export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
+                    export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
+                    export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
+                    export ARM_TENANT_ID=$(ARM_TENANT_ID)
+                    terraform apply output.tfplan
+                  displayName: Terraform Apply
+                  workingDirectory: $(tfWorkSpace)/terraform
