@@ -76,7 +76,7 @@ stages:
                     key: terraform | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
                     path: "$(tfWorkSpace)"
                 - script: |
-                    ls $(tfWorkSpace)
+                    ls $(tfWorkSpace)/terraform
                     export ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
                     export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
                     export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
