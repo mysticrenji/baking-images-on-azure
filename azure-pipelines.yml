@@ -58,7 +58,9 @@ stages:
             inputs:
               outputFilePath: $(tfWorkSpace)/terraform/output.tfplan
               artifactName: Staging
-              
+  - stage: "Review_Terraform_Plan"
+    displayName: "Review Terraform Plan"
+    jobs:           
       - deployment: Terraform_Apply
         dependsOn: Terraform_Plan
         container: buildpacks-infra
