@@ -61,12 +61,7 @@ stages:
   - stage: "Review_Terraform_Plan"
     displayName: "Review Terraform Plan"
     dependsOn: Terraform_Build
-    jobs:
-      - job: Terraform_Init
-        container: buildpacks-infra
-        steps:
-         - script: |
-            echo "Terraform plan has been approved"     
+    jobs:   
       - deployment: Terraform_Apply
         container: buildpacks-infra
         displayName: Terraform Apply
