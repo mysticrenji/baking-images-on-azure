@@ -60,7 +60,13 @@ stages:
               artifactName: Staging
   - stage: "Review_Terraform_Plan"
     displayName: "Review Terraform Plan"
-    jobs:           
+    jobs:
+      - job: Terraform_Init
+        container: buildpacks-infra
+        steps:
+         - script: |
+            echo "Terraform plan has been approved"
+         
       - deployment: Terraform_Apply
         dependsOn: Terraform_Plan
         container: buildpacks-infra
