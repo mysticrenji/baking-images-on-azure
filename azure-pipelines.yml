@@ -87,7 +87,7 @@ stages:
                   workingDirectory: $(tfWorkSpace)/terraform
   - stage: "Packer_Build"
     dependsOn: Review_Terraform_Plan
-    displayName: "Packer Init"
+    displayName: "Packer Build"
     jobs:
       - job: Packer_Init
         container: buildpacks-infra
@@ -101,8 +101,15 @@ stages:
                 packer fmt -recursive .
                 packer validate -var-file="auto.pkrvars.hcl" .
             workingDirectory: $(Build.SourcesDirectory)/packer
-          - task: Cache@2
-            displayName: "Cache Packer providers"
-            inputs:
-              key: packer | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
-              path: "$(tfWorkSpace)/packer" 
+      - job: Packer_Image_Build
+        container: buildpacks-infra
+        steps:
+          - script: |
+                packer init .
+                export PKR_VAR_azure_client_id=$(ARM_CLIENT_ID)
+                export PKR_VAR_azure_client_secret=$(ARM_CLIENT_SECRET)
+                export PKR_VAR_azure_subscription_id=$(ARM_SUBSCRIPTION_ID)
+                export PKR_VAR_azure_tenant_id=$(ARM_TENANT_ID)
+                packer build -force -var-file="auto.pkrvars.hcl" .
+            workingDirectory: $(Build.SourcesDirectory)/packer
+                          
