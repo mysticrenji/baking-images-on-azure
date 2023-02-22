@@ -93,11 +93,11 @@ stages:
         container: buildpacks-infra
         steps:
           - script: |
-                export ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
-                export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
-                export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
-                export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
-                export ARM_TENANT_ID=$(ARM_TENANT_ID)
+                export PK_VAR_ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
+                export PK_VAR_ARM_CLIENT_ID=$(ARM_CLIENT_ID)
+                export PK_VAR_ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
+                export PK_VAR_ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
+                export PK_VAR_ARM_TENANT_ID=$(ARM_TENANT_ID)
                 packer init .
                 packer fmt -recursive .
                 packer validate -var-file="auto.pkrvars.hcl" .
