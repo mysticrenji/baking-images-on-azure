@@ -100,7 +100,7 @@ stages:
                 export ARM_TENANT_ID=$(ARM_TENANT_ID)
                 packer init .
                 packer fmt -recursive .
-                packer validate -var-file="auto.pkrvars.hcl"   
+                packer validate -var-file="auto.pkrvars.hcl" .
             workingDirectory: $(Build.SourcesDirectory)/packer
           - task: Cache@2
             displayName: "Cache Packer providers"
