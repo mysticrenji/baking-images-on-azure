@@ -57,12 +57,7 @@ stages:
           - task: TerraformOutput@1
             inputs:
               outputFilePath: $(tfWorkSpace)/terraform/output.tfplan
-              artifactName: Staging
-          - task: Cache@2
-            displayName: "Cache TF providers"
-            inputs:
-              key: terraform | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
-              path: "$(tfWorkSpace)/terraform"          
+              artifactName: Staging        
   - stage: "Review_Terraform_Plan"
     displayName: "Review Terraform Plan"
     dependsOn: Terraform_Build
@@ -87,6 +82,6 @@ stages:
                     export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
                     export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
                     export ARM_TENANT_ID=$(ARM_TENANT_ID)
-                    terraform apply output.tfplan
+                    terraform apply -var-file=auto.tfvars -auto-approve
                   displayName: Terraform Apply
                   workingDirectory: $(tfWorkSpace)/terraform
