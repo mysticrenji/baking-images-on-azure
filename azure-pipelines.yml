@@ -58,6 +58,11 @@ stages:
             inputs:
               outputFilePath: $(tfWorkSpace)/terraform/output.tfplan
               artifactName: Staging
+          - task: Cache@2
+            displayName: "Cache TF providers"
+            inputs:
+              key: terraform | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
+              path: "$(tfWorkSpace)/terraform"          
   - stage: "Review_Terraform_Plan"
     displayName: "Review Terraform Plan"
     dependsOn: Terraform_Build
