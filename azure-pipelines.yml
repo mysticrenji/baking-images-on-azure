@@ -85,3 +85,25 @@ stages:
                     terraform apply -var-file=auto.tfvars -auto-approve
                   displayName: Terraform Apply
                   workingDirectory: $(tfWorkSpace)/terraform
+  - stage: "Packer_Build"
+    dependsOn: Review_Terraform_Plan
+    displayName: "Packer Init"
+    jobs:
+      - job: Packer_Init
+        container: buildpacks-infra
+        steps:
+          - script: |
+                export ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
+                export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
+                export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
+                export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
+                export ARM_TENANT_ID=$(ARM_TENANT_ID)
+                packer init .
+                packer fmt -recursive .
+                packer validate -var-file="auto.pkrvars.hcl"   
+            workingDirectory: $(Build.SourcesDirectory)/packer
+          - task: Cache@2
+            displayName: "Cache Packer providers"
+            inputs:
+              key: packer | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
+              path: "$(tfWorkSpace)/packer" 
