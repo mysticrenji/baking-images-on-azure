@@ -2,7 +2,7 @@ name: baking-the-image
 resources:
   containers:
     - container: buildpacks-infra
-      image: ghcr.io/mysticrenji/buildpacks-infra:v1.0.0
+      image: ghcr.io/mysticrenji/buildpacks-infra:v1.0.1
 
 trigger:
   - main
