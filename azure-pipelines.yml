@@ -60,6 +60,7 @@ stages:
               artifactName: Staging        
   - stage: "Review_Terraform_Plan"
     displayName: "Review Terraform Plan"
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     dependsOn: Terraform_Build
     jobs:   
       - deployment: Terraform_Apply
