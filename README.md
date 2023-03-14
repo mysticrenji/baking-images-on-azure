@@ -1,6 +1,8 @@
 # baking-images-on-azure
 Baking Images on Azure using Packer and Ansible
 
+Please refer the medium article [here](https://faun.pub/baking-images-in-azure-using-azure-pipelines-93accd20b230) for complete walkthrough.
+
 ## Configuration
 ### 1. Install azcli
 ```
