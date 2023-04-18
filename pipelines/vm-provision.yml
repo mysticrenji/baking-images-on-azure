@@ -1,0 +1,33 @@
+parameters:
+- name: azureEnvironment
+  displayName: Azure Subscription
+  type: string
+  values:
+  - Dev
+  - Staging
+  - Production
+- name: azureRegion
+  displayName: Azure region
+  type: string
+  values:
+  - westeurope
+  - eastus
+
+trigger:
+- none
+
+pr: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+- group: ${{ parameters.azureEnvironment }}
+
+
+steps:
+- task: CmdLine@2
+  displayName: Terraform init
+  inputs:
+    script: |
+          echo "Testing"
