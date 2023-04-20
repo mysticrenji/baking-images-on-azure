@@ -44,36 +44,22 @@ data "azurerm_shared_image" "shared_image" {
   resource_group_name = var.shared_image_rg
 }
 
-resource "azurerm_virtual_machine" "runtime_machine" {
-  name                  = var.machinename
-  location              = azurerm_resource_group.runtime_farm.location
-  resource_group_name   = azurerm_resource_group.runtime_farm.name
-  network_interface_ids = [azurerm_network_interface.runtime_nic.id]
+resource "azurerm_windows_virtual_machine" "runtime_machine" {
+  name                = var.machinename
+  resource_group_name = azurerm_resource_group.runtime_farm.name
+  location            = azurerm_resource_group.runtime_farm.location
+  size                = "Standard_DS1_v2"
+  admin_username      = "adminuser"
+  admin_password      = "P@$$w0rd1234!"
+  network_interface_ids = [
+    azurerm_network_interface.runtime_nic.id,
+  ]
 
-  source_image_id = data.azurerm_image.shared_image.id
-  storage_os_disk {
-    name              = "${var.machinename}-osdisk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
   }
 
-  os_profile {
-    computer_name  = var.machinename
-    admin_username = "adminuser"
-    admin_password = "AdminPassword1234!"
-  }
+  source_image_id = data.azurerm_shared_image.shared_image.id
 
-  os_profile_windows_config {
-    provision_vm_agent = true
-  }
-
-  # custom_image_reference {
-  #   publisher = "CustomPublisher"
-  #   offer     = "CustomOffer"
-  #   sku       = "CustomSku"
-  #   version   = "CustomVersion"
-  # }
-
-  vm_size = "Standard_DS1_v2"
 }

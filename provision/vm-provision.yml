@@ -14,7 +14,7 @@ parameters:
       - eastus
 
   - name: machineName
-    displayName: Name of the machine
+    displayName: Name of the machine (Max 15 char)
     type: string
     default: ""
 
