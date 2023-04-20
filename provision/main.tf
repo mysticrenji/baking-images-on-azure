@@ -50,9 +50,7 @@ resource "azurerm_virtual_machine" "runtime_machine" {
   resource_group_name   = azurerm_resource_group.runtime_farm.name
   network_interface_ids = [azurerm_network_interface.runtime_nic.id]
 
-  storage_profile_image_reference {
-    id = data.azurerm_image.shared_image.id
-  }
+  source_image_id = data.azurerm_image.shared_image.id
   storage_os_disk {
     name              = "${var.machinename}-osdisk"
     caching           = "ReadWrite"
