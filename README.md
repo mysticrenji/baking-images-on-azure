@@ -67,7 +67,7 @@ packer build -force -var-file="auto.pkrvars.hcl" \
 ## Tips
 1. List out the availiable SKUs on the region
 ```
-az vm list-skus --location southeastasia --size Standard_D --all --output table
+az vm list-skus --location westeutope --size Standard_D --all --output table
 ```
 2. Remove all the published versions in the SIG before destroying it via terraform. Terraform is not knowing about the current state
 
