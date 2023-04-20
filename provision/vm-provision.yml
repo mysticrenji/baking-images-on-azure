@@ -1,37 +1,37 @@
 parameters:
-# - name: azureEnvironment
-#   displayName: Azure Subscription
-#   type: string
-#   values:
-#   - Dev
-#   - Staging
-#   - Production
-- name: azureRegion
-  displayName: Azure region for deployment
-  type: string
-  values:
-  - westeurope
-  - eastus
+  # - name: azureEnvironment
+  #   displayName: Azure Subscription
+  #   type: string
+  #   values:
+  #   - Dev
+  #   - Staging
+  #   - Production
+  - name: azureRegion
+    displayName: Azure region for deployment
+    type: string
+    values:
+      - westeurope
+      - eastus
 
-- name: machineName
-  displayName: Name of the machine
-  type: string
-  default: ""
+  - name: machineName
+    displayName: Name of the machine
+    type: string
+    default: ""
 
-- name: machineType
-  displayName: Machine OS Version
-  type: string
-  values:
-  - en-windows-2019
-  - en-windows-2022
+  - name: machineType
+    displayName: Machine OS Version
+    type: string
+    values:
+      - en-windows-2019
+      - en-windows-2022
 
 trigger:
-- none
+  - none
 
 pr: none
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: "ubuntu-latest"
 
 name: provioning-vm
 resources:
@@ -44,9 +44,6 @@ variables:
   - name: tfWorkSpace
     value: $(Pipeline.Workspace)/s/
 
-steps:
-
-
 stages:
   - stage: "Terraform_Build"
     displayName: "Terraform Build"
@@ -54,19 +51,19 @@ stages:
       - job: Terraform_Init
         container: buildpacks-infra
         steps:
-        # - ${{ if eq(length(parameters.machineName), 0) }}:
-        #   - script: |
-        #         echo Machinename is empty. Please select one to proceed futher.
-        #         exit 1
-        #     displayName: Parameter EmptyCheck
+          # - ${{ if eq(length(parameters.machineName), 0) }}:
+          #   - script: |
+          #         echo Machinename is empty. Please select one to proceed futher.
+          #         exit 1
+          #     displayName: Parameter EmptyCheck
           - script: |
-                export ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
-                export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
-                export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
-                export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
-                export ARM_TENANT_ID=$(ARM_TENANT_ID)
-                terraform init
-                terraform fmt
+              export ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
+              export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
+              export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
+              export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
+              export ARM_TENANT_ID=$(ARM_TENANT_ID)
+              terraform init
+              terraform fmt
             workingDirectory: $(Build.SourcesDirectory)/provision
           - task: Cache@2
             displayName: "Register TF providers"
@@ -78,22 +75,21 @@ stages:
         dependsOn: Terraform_Init
         container: buildpacks-infra
         steps:
-
           - task: Cache@2
             displayName: "Cache TF providers"
             inputs:
               key: terraform | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
               path: "$(tfWorkSpace)"
           - script: |
-                export ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
-                export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
-                export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
-                export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
-                export ARM_TENANT_ID=$(ARM_TENANT_ID)
-                export TF_VAR_shared_image_definition=${{ parameters.machineType }}
-                export TF_VAR_shared_image_definition=${{ parameters.machinename }}
-                terraform plan -var-file=auto.tfvars -out output.tfplan
-                terraform show -no-color -json output.tfplan > output.json
+              export ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
+              export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
+              export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
+              export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
+              export ARM_TENANT_ID=$(ARM_TENANT_ID)
+              export TF_VAR_shared_image_definition=${{ parameters.machineType }}
+              export TF_VAR_shared_image_definition=${{ parameters.machinename }}
+              terraform plan -var-file=auto.tfvars -out output.tfplan
+              terraform show -no-color -json output.tfplan > output.json
             displayName: "Terraform Plan"
             workingDirectory: $(tfWorkSpace)/provision
           - task: TerraformOutput@1
