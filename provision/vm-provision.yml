@@ -45,19 +45,20 @@ variables:
     value: $(Pipeline.Workspace)/s/
 
 steps:
-  - checkout: none
-  - ${{ if eq(length(parameters.machineName), 0) }}:
-    - script: echo Machinename is empty. Please enter one.
-      displayName: Parameter EmptyCheck
+
 
 stages:
-
   - stage: "Terraform_Build"
     displayName: "Terraform Build"
     jobs:
       - job: Terraform_Init
         container: buildpacks-infra
         steps:
+        # - ${{ if eq(length(parameters.machineName), 0) }}:
+        #   - script: |
+        #         echo Machinename is empty. Please select one to proceed futher.
+        #         exit 1
+        #     displayName: Parameter EmptyCheck
           - script: |
                 export ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
                 export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
