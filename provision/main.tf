@@ -38,9 +38,10 @@ resource "azurerm_network_interface" "runtime_nic" {
 }
 
 # Points to Packer build image
-data "azurerm_image" "image" {
-  name                = var.manageddiskname
-  resource_group_name = var.manageddiskname-rg
+data "azurerm_shared_image" "shared_image" {
+  name                = var.shared_image_definition
+  gallery_name        = var.shared_image_gallery
+  resource_group_name = var.shared_image_rg
 }
 
 resource "azurerm_virtual_machine" "runtime_machine" {
@@ -50,7 +51,7 @@ resource "azurerm_virtual_machine" "runtime_machine" {
   network_interface_ids = [azurerm_network_interface.runtime_nic.id]
 
   storage_profile_image_reference {
-    id = data.azurerm_image.image.id
+    id = data.azurerm_image.shared_image.id
   }
   storage_os_disk {
     name              = "${var.machinename}-osdisk"

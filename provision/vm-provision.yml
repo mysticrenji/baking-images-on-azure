@@ -1,17 +1,29 @@
 parameters:
-- name: azureEnvironment
-  displayName: Azure Subscription
-  type: string
-  values:
-  - Dev
-  - Staging
-  - Production
+# - name: azureEnvironment
+#   displayName: Azure Subscription
+#   type: string
+#   values:
+#   - Dev
+#   - Staging
+#   - Production
 - name: azureRegion
-  displayName: Azure region
+  displayName: Azure region for deployment
   type: string
   values:
   - westeurope
   - eastus
+
+- name: machineName
+  displayName: Name of the machine
+  type: string
+  default: ""
+
+- name: machineType
+  displayName: Machine OS Version
+  type: string
+  values:
+  - en-windows-2019
+  - en-windows-2022
 
 trigger:
 - none
@@ -21,13 +33,95 @@ pr: none
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-- group: ${{ parameters.azureEnvironment }}
+name: provioning-vm
+resources:
+  containers:
+    - container: buildpacks-infra
+      image: ghcr.io/mysticrenji/buildpacks-infra:v1.0.1
 
+variables:
+  - group: infra_variables
+  - name: tfWorkSpace
+    value: $(Pipeline.Workspace)/s/
 
 steps:
-- task: CmdLine@2
-  displayName: Terraform init
-  inputs:
-    script: |
-          echo "Testing"
+  - checkout: none
+  - ${{ if eq(length(parameters.machineName), 0) }}:
+    - script: echo Machinename is empty. Please enter one.
+      displayName: Parameter EmptyCheck
+
+stages:
+
+  - stage: "Terraform_Build"
+    displayName: "Terraform Build"
+    jobs:
+      - job: Terraform_Init
+        container: buildpacks-infra
+        steps:
+          - script: |
+                export ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
+                export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
+                export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
+                export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
+                export ARM_TENANT_ID=$(ARM_TENANT_ID)
+                terraform init
+                terraform fmt
+            workingDirectory: $(Build.SourcesDirectory)/provision
+          - task: Cache@2
+            displayName: "Register TF providers"
+            inputs:
+              key: terraform | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
+              path: "$(tfWorkSpace)"
+
+      - job: Terraform_Plan
+        dependsOn: Terraform_Init
+        container: buildpacks-infra
+        steps:
+
+          - task: Cache@2
+            displayName: "Cache TF providers"
+            inputs:
+              key: terraform | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
+              path: "$(tfWorkSpace)"
+          - script: |
+                export ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
+                export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
+                export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
+                export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
+                export ARM_TENANT_ID=$(ARM_TENANT_ID)
+                terraform plan -var-file=auto.tfvars -out output.tfplan
+                terraform show -no-color -json output.tfplan > output.json
+            displayName: "Terraform Plan"
+            workingDirectory: $(tfWorkSpace)/provision
+          - task: TerraformOutput@1
+            inputs:
+              outputFilePath: $(tfWorkSpace)/terraform/output.tfplan
+              artifactName: Staging
+  - stage: "Review_Terraform_Plan"
+    displayName: "Review Terraform Plan"
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    dependsOn: Terraform_Build
+    jobs:
+      - deployment: Terraform_Apply
+        container: buildpacks-infra
+        displayName: Terraform Apply
+        environment: "Staging"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: Cache@2
+                  displayName: "Retrieve TF Cache"
+                  inputs:
+                    key: terraform | $(Agent.OS) | "$(Build.BuildNumber)" | $(Build.SourceVersion)"
+                    path: "$(tfWorkSpace)"
+                - script: |
+                    ls $(tfWorkSpace)/terraform
+                    export ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
+                    export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
+                    export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
+                    export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
+                    export ARM_TENANT_ID=$(ARM_TENANT_ID)
+                    terraform apply -var-file=auto.tfvars -auto-approve
+                  displayName: Terraform Apply
+                  workingDirectory: $(tfWorkSpace)/provision
