@@ -94,7 +94,7 @@ stages:
             workingDirectory: $(tfWorkSpace)/provision
           - task: TerraformOutput@1
             inputs:
-              outputFilePath: $(tfWorkSpace)/terraform/output.tfplan
+              outputFilePath: $(tfWorkSpace)/provision/output.tfplan
               artifactName: Staging
   - stage: "Review_Terraform_Plan"
     displayName: "Review Terraform Plan"
