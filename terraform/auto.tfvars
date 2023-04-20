@@ -1,7 +1,7 @@
 packer-build-rg     = "golden-image-factory-build"
 packer-artifacts-rg = "golden-image-factory-artifacts"
-region              = "southeastasia"
-image_gallery       = "golden_image_gallery" #name can only contain alphanumeric, full stops and underscores.
+region              = "westeurope"
+image_gallery       = "golden_image_gallery" # name can only contain alphanumeric, full stops and underscores.
 azure_os_type       = "Windows"              # os_type to be one of [Linux Windows]
 
 # Image Definition
