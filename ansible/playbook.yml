@@ -1,5 +1,6 @@
 ---
 - name: Packer VM Playbook
   hosts: all
+  become: true
   roles:
     -  packaging
