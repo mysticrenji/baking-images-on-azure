@@ -87,7 +87,7 @@ stages:
               export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
               export ARM_TENANT_ID=$(ARM_TENANT_ID)
               export TF_VAR_shared_image_definition=${{ parameters.machineType }}
-              export TF_VAR_shared_image_definition=${{ parameters.machinename }}
+              export TF_VAR_machinename=${{ parameters.machinename }}
               terraform plan -var-file=auto.tfvars -out output.tfplan
               terraform show -no-color -json output.tfplan > output.json
             displayName: "Terraform Plan"
@@ -122,7 +122,7 @@ stages:
                     export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
                     export ARM_TENANT_ID=$(ARM_TENANT_ID)
                     export TF_VAR_shared_image_definition=${{ parameters.machineType }}
-                    export TF_VAR_shared_image_definition=${{ parameters.machinename }}
+                    export TF_VAR_machinename=${{ parameters.machinename }}
                     terraform apply -var-file=auto.tfvars -auto-approve
                   displayName: Terraform Apply
                   workingDirectory: $(tfWorkSpace)/provision
