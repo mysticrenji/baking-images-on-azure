@@ -54,7 +54,9 @@ resource "azurerm_windows_virtual_machine" "runtime_machine" {
   network_interface_ids = [
     azurerm_network_interface.runtime_nic.id,
   ]
-
+  identity {
+    type = "SystemAssigned"
+  }
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -63,3 +65,23 @@ resource "azurerm_windows_virtual_machine" "runtime_machine" {
   source_image_id = data.azurerm_shared_image.shared_image.id
 
 }
+
+# Join the virtual machine to the Azure Active Directory domain
+# resource "azurerm_virtual_machine_domain_join_extension" "join-ad" {
+#   virtual_machine_id         = azurerm_virtual_machine.example.id
+#   name                       = "vm-domainjoin"
+#   type                       = "Microsoft.Compute/virtualMachines/extensions"
+#   publisher                  = "Microsoft.Compute"
+#   type_version               = "1.1"
+#   auto_upgrade_minor_version = true
+
+#   settings = <<SETTINGS
+#     {
+#       "name": "${var.domain_name}",
+#       "ouPath": "${var.ou_path}",
+#       "user": "${var.domain_user}",
+#       "restart": "true",
+#       "options": "3"
+#     }
+#   SETTINGS
+# }
