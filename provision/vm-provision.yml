@@ -31,8 +31,7 @@ trigger:
 pr: none
 
 pool:
-  name: Kubernetes
-#  vmImage: "ubuntu-latest"
+  vmImage: "ubuntu-latest"
 
 name: provioning-vm
 resources:
